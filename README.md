@@ -4,9 +4,8 @@
 
 ## 🌟 在线预览
 
-**[👉 点击这里查看所有演示](https://yourusername.github.io/PyCharmMiscProject/)**
+**[👉 点击这里查看所有演示]( https://eveyai2005-glitch.github.io/play-with-agent/)**
 
-(部署后替换为你的实际GitHub Pages链接)
 
 ---
 
@@ -54,108 +53,6 @@
 
 ---
 
-## 🚀 快速开始
-
-### 方法一: 直接使用(无需安装)
-
-1. **下载或克隆仓库**
-   ```bash
-   git clone https://github.com/yourusername/PyCharmMiscProject.git
-   ```
-
-2. **在浏览器中打开**
-   - 双击任意 `.html` 文件
-   - 或者右键 → 打开方式 → 浏览器
-
-3. **在手机端查看**
-   - 部署到GitHub Pages后(见下方部署说明)
-   - 直接在微信中发送链接
-
-### 方法二: 部署到GitHub Pages(推荐)
-
-#### 前置要求
-- GitHub账号(免费注册: github.com)
-- Git客户端(可选,也可以用网页上传)
-
-#### 部署步骤
-
-**步骤1: 创建GitHub仓库**
-
-1. 访问 [github.com](https://github.com)
-2. 点击右上角 "+" → "New repository"
-3. 填写信息:
-   - Repository name: `presentations` (或其他名字)
-   - Description: `HTML演示文稿合集`
-   - 选择 **Public**(公开)
-   - ✅ 勾选 "Add a README file"
-4. 点击 "Create repository"
-
-**步骤2: 上传文件**
-
-有两种方式:
-
-**方式A: 使用Git命令(推荐)**
-```bash
-# 进入你的项目目录
-cd /Users/zhangxin/PyCharmMiscProject
-
-# 初始化Git仓库(如果还没有)
-git init
-
-# 添加所有文件
-git add .
-
-# 提交
-git commit -m "Initial commit: Add HTML presentations"
-
-# 关联GitHub仓库(替换为你的仓库地址)
-git remote add origin https://github.com/yourusername/presentations.git
-
-# 推送到GitHub
-git push -u origin main
-```
-
-**方式B: 网页上传(简单)**
-1. 在GitHub仓库页面
-2. 点击 "Add file" → "Upload files"
-3. 拖拽所有 `.html` 文件
-4. 点击 "Commit changes"
-
-**步骤3: 启用GitHub Pages**
-
-1. 在仓库页面,点击 "Settings"
-2. 左侧菜单找到 "Pages"
-3. 在 "Source" 下拉框选择:
-   - Branch: `main` (或 `master`)
-   - Folder: `/ (root)`
-4. 点击 "Save"
-5. 等待1-2分钟,页面会显示你的网站链接
-
-**步骤4: 访问你的网站**
-
-你会获得类似这样的链接:
-```
-https://yourusername.github.io/presentations/
-```
-
-现在可以:
-- ✅ 在浏览器中直接访问
-- ✅ 在微信中分享链接
-- ✅ 在任何设备上查看
-
----
-
-## 📱 移动端特性
-
-所有模板都经过移动端优化:
-
-- ✅ 触摸滑动切换页面
-- ✅ 响应式布局自适应
-- ✅ 流畅的动画效果
-- ✅ 优化的字体大小
-- ✅ 友好的交互体验
-
----
 
 ## 🎨 自定义修改
 
