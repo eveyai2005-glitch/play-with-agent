@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信群通知管理解决方案</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #1a1a2e;
+            overflow: hidden;
+            touch-action: pan-y;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        /* Slide 1: Title */
+        .slide-1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .slide-1 h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .slide-1 .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .slide-1 .icon {
+            font-size: 5em;
+            margin-bottom: 30px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        /* Slide 2: Problem */
+        .slide-2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .slide-2 h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .problem-list {
+            list-style: none;
+            max-width: 600px;
+        }
+
+        .problem-list li {
+            font-size: 1.3em;
+            margin: 25px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            animation: slideInLeft 0.6s ease-out both;
+        }
+
+        .problem-list li:nth-child(1) { animation-delay: 0.2s; }
+        .problem-list li:nth-child(2) { animation-delay: 0.4s; }
+        .problem-list li:nth-child(3) { animation-delay: 0.6s; }
+
+        .problem-list li::before {
+            content: "❌ ";
+            margin-right: 10px;
+        }
+
+        /* Slide 3: Solution Overview */
+        .slide-3 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .slide-3 h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            max-width: 700px;
+        }
+
+        .solution-card {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s;
+            animation: zoomIn 0.5s ease-out both;
+        }
+
+        .solution-card:nth-child(1) { animation-delay: 0.2s; }
+        .solution-card:nth-child(2) { animation-delay: 0.4s; }
+        .solution-card:nth-child(3) { animation-delay: 0.6s; }
+        .solution-card:nth-child(4) { animation-delay: 0.8s; }
+
+        .solution-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .solution-card .card-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .solution-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .solution-card p {
+            font-size: 0.95em;
+            opacity: 0.95;
+        }
+
+        /* Slide 4: Best Solution */
+        .slide-4 {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        .slide-4 h2 {
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+
+        .highlight-box {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 650px;
+            backdrop-filter: blur(10px);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .highlight-box h3 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .feature-list li {
+            font-size: 1.2em;
+            margin: 15px 0;
+            padding-left: 35px;
+            position: relative;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        /* Slide 5: How to Use */
+        .slide-5 {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+            color: white;
+        }
+
+        .slide-5 h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+        }
+
+        .steps {
+            max-width: 600px;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin: 30px 0;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            animation: slideInRight 0.6s ease-out both;
+        }
+
+        .step:nth-child(1) { animation-delay: 0.2s; }
+        .step:nth-child(2) { animation-delay: 0.4s; }
+        .step:nth-child(3) { animation-delay: 0.6s; }
+        .step:nth-child(4) { animation-delay: 0.8s; }
+
+        .step-number {
+            background: white;
+            color: #330867;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-size: 1.3em;
+            margin-bottom: 8px;
+        }
+
+        .step-content p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        /* Slide 6: Demo */
+        .slide-6 {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+        }
+
+        .slide-6 h2 {
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+
+        .demo-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .demo-box .qr-placeholder {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 20px auto;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .demo-box p {
+            font-size: 1.2em;
+            margin: 15px 0;
+            color: #666;
+        }
+
+        .demo-box .link {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.9em;
+            word-break: break-all;
+            margin-top: 20px;
+        }
+
+        /* Slide 7: Thank You */
+        .slide-7 {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+            text-align: center;
+        }
+
+        .slide-7 h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .slide-7 p {
+            font-size: 1.3em;
+            margin: 20px 0;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .slide-7 .contact {
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn {
+            background: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #333;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-indicator {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+            z-index: 1000;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px 20px;
+            }
+
+            .slide-1 h1 {
+                font-size: 1.8em;
+            }
+
+            .slide-1 .subtitle {
+                font-size: 1em;
+            }
+
+            .slide h2 {
+                font-size: 1.6em;
+            }
+
+            .solution-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .problem-list li,
+            .step {
+                font-size: 1em;
+            }
+
+            .nav-controls {
+                bottom: 20px;
+                padding: 10px 20px;
+            }
+
+            .nav-btn {
+                padding: 10px 18px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Touch swipe hint */
+        .swipe-hint {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 0.9em;
+            opacity: 0.7;
+            animation: fadeInOut 3s ease-in-out infinite;
+            z-index: 999;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Title -->
+        <div class="slide slide-1 active">
+            <div class="icon">📱</div>
+            <h1>微信群通知管理<br>解决方案</h1>
+            <p class="subtitle">让通知确认更高效、更智能</p>
+        </div>
+
+        <!-- Slide 2: Problem -->
+        <div class="slide slide-2">
+            <h2>😩 当前痛点</h2>
+            <ul class="problem-list">
+                <li>几百人的大群，人员分散在不同企业</li>
+                <li>发通知后无法及时知道谁已收到</li>
+                <li>需要逐个私聊确认，浪费大量时间</li>
+            </ul>
+        </div>
+
+        <!-- Slide 3: Solutions -->
+        <div class="slide slide-3">
+            <h2>💡 解决方案对比</h2>
+            <div class="solution-grid">
+                <div class="solution-card">
+                    <div class="card-icon">🏢</div>
+                    <h3>企业微信/钉钉</h3>
+                    <p>已读未读功能完善</p>
+                </div>
+                <div class="solution-card">
+                    <div class="card-icon">📊</div>
+                    <h3>在线表单</h3>
+                    <p>灵活便捷，成本低</p>
+                </div>
+                <div class="solution-card">
+                    <div class="card-icon">🤖</div>
+                    <h3>自动化脚本</h3>
+                    <p>全自动但有风险</p>
+                </div>
+                <div class="solution-card">
+                    <div class="card-icon">📝</div>
+                    <h3>流程优化</h3>
+                    <p>半自动，需人工配合</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Recommended Solution -->
+        <div class="slide slide-4">
+            <h2>⭐ 推荐方案：在线确认表单</h2>
+            <div class="highlight-box">
+                <h3>为什么选择这个方案？</h3>
+                <ul class="feature-list">
+                    <li>无需安装额外APP，微信直接打开</li>
+                    <li>实时统计确认人数，一目了然</li>
+                    <li>数据自动收集，方便导出管理</li>
+                    <li>零封号风险，安全可靠</li>
+                    <li>成本低，实施简单快速</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 5: How to Use -->
+        <div class="slide slide-5">
+            <h2>🚀 使用步骤</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>创建表单</h3>
+                        <p>使用腾讯文档/金山表单创建确认表单</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>发送通知</h3>
+                        <p>在群里发送通知内容 + 表单链接</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>实时监控</h3>
+                        <p>查看后台数据，了解确认进度</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>定向提醒</h3>
+                        <p>只对未确认人员进行针对性提醒</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Demo -->
+        <div class="slide slide-6">
+            <h2>📲 效果演示</h2>
+            <div class="demo-box">
+                <h3 style="font-size: 1.5em; margin-bottom: 20px;">扫码体验示例表单</h3>
+                <div class="qr-placeholder">
+                    二维码区域
+                </div>
+                <p>或直接访问链接：</p>
+                <div class="link">
+                    https://your-form-link.com/notification
+                </div>
+                <p style="margin-top: 20px; font-size: 0.9em; color: #999;">
+                    💡 提示：替换为你的实际表单链接
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Thank You -->
+        <div class="slide slide-7">
+            <h2>🎉 感谢观看</h2>
+            <p>让工作沟通更高效！</p>
+            <div class="contact">
+                <p style="font-size: 1.1em;">📧 如有疑问，欢迎交流</p>
+                <p style="font-size: 1.1em; margin-top: 15px;">
+                    <strong>立即开始使用 →</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← 上一页</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">下一页 →</button>
+    </div>
+
+    <!-- Page Indicator -->
+    <div class="page-indicator">
+        <span id="currentPage">1</span> / <span id="totalPages">7</span>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Swipe Hint -->
+    <div class="swipe-hint">👆 左右滑动切换页面</div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        // Initialize
+        document.getElementById('totalPages').textContent = totalSlides;
+        updateProgress();
+
+        // Change slide
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                slides[currentSlide].classList.remove('active');
+                slides[currentSlide].classList.add(direction > 0 ? 'prev' : '');
+                
+                setTimeout(() => {
+                    slides[currentSlide].classList.remove('prev');
+                }, 600);
+                
+                currentSlide = newSlide;
+                slides[currentSlide].classList.add('active');
+                
+                updateControls();
+                updateProgress();
+            }
+        }
+
+        // Update navigation controls
+        function updateControls() {
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+            document.getElementById('currentPage').textContent = currentSlide + 1;
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Touch swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    changeSlide(1); // Swipe left, go next
+                } else {
+                    changeSlide(-1); // Swipe right, go prev
+                }
+            }
+        }
+
+        // Mouse wheel support
+        let wheelTimeout;
+        document.addEventListener('wheel', (e) => {
+            clearTimeout(wheelTimeout);
+            wheelTimeout = setTimeout(() => {
+                if (e.deltaY > 0) {
+                    changeSlide(1);
+                } else {
+                    changeSlide(-1);
+                }
+            }, 50);
+        });
+
+        // Initialize controls
+        updateControls();
+
+        // Auto-hide swipe hint after 5 seconds
+        setTimeout(() => {
+            const hint = document.querySelector('.swipe-hint');
+            if (hint) {
+                hint.style.opacity = '0';
+                setTimeout(() => hint.remove(), 1000);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

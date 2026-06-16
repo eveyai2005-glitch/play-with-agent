@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的日常日记</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+            background: #faf9f7;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        /* Slide 1: Cover - Warm morning light */
+        .slide-1 {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #5d4e37;
+        }
+
+        .slide-1 .date-display {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            opacity: 0.8;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .slide-1 h1 {
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .slide-1 .subtitle {
+            font-size: 1.2em;
+            opacity: 0.7;
+            font-style: italic;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .slide-1 .morning-icon {
+            font-size: 4em;
+            margin-top: 40px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Slide 2: Morning Mood */
+        .slide-2 {
+            background: linear-gradient(to bottom, #fff5e6 0%, #ffe4cc 100%);
+            color: #6b5b4f;
+        }
+
+        .slide-2 h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            font-weight: 300;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .mood-container {
+            max-width: 700px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .mood-question {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        .mood-options {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .mood-item {
+            text-align: center;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
+            min-width: 120px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .mood-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .mood-emoji {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .mood-text {
+            font-size: 1em;
+            opacity: 0.8;
+        }
+
+        .gratitude-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .gratitude-section h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+
+        .gratitude-text {
+            font-size: 1.1em;
+            line-height: 1.8;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        /* Slide 3: Today's Plan */
+        .slide-3 {
+            background: linear-gradient(to bottom, #e8f5e9 0%, #c8e6c9 100%);
+            color: #4a5d4a;
+        }
+
+        .slide-3 h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            font-weight: 300;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .todo-container {
+            max-width: 650px;
+            width: 100%;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            transition: all 0.3s;
+            animation: slideInLeft 0.6s ease-out both;
+        }
+
+        .todo-item:nth-child(1) { animation-delay: 0.2s; }
+        .todo-item:nth-child(2) { animation-delay: 0.4s; }
+        .todo-item:nth-child(3) { animation-delay: 0.6s; }
+        .todo-item:nth-child(4) { animation-delay: 0.8s; }
+        .todo-item:nth-child(5) { animation-delay: 1s; }
+
+        .todo-item:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .todo-checkbox {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4a5d4a;
+            border-radius: 50%;
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .todo-text {
+            font-size: 1.15em;
+            flex: 1;
+        }
+
+        .todo-time {
+            font-size: 0.9em;
+            opacity: 0.6;
+            margin-left: 15px;
+        }
+
+        /* Slide 4: Moments */
+        .slide-4 {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            color: #5d4e37;
+        }
+
+        .slide-4 h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            font-weight: 300;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .moments-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            max-width: 750px;
+        }
+
+        .moment-card {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 30px;
+            border-radius: 15px;
+            transition: all 0.3s;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .moment-card:nth-child(1) { animation-delay: 0.2s; }
+        .moment-card:nth-child(2) { animation-delay: 0.4s; }
+        .moment-card:nth-child(3) { animation-delay: 0.6s; }
+        .moment-card:nth-child(4) { animation-delay: 0.8s; }
+
+        .moment-card:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .moment-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .moment-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .moment-desc {
+            font-size: 0.95em;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        /* Slide 5: Reflection */
+        .slide-5 {
+            background: linear-gradient(to bottom, #dfe6e9 0%, #b2bec3 100%);
+            color: #2d3436;
+        }
+
+        .slide-5 h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            font-weight: 300;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .reflection-container {
+            max-width: 700px;
+        }
+
+        .reflection-item {
+            margin: 30px 0;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 15px;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .reflection-item:nth-child(1) { animation-delay: 0.2s; }
+        .reflection-item:nth-child(2) { animation-delay: 0.4s; }
+        .reflection-item:nth-child(3) { animation-delay: 0.6s; }
+
+        .reflection-item h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reflection-item p {
+            font-size: 1.05em;
+            line-height: 1.8;
+            opacity: 0.85;
+        }
+
+        /* Slide 6: Evening Gratitude */
+        .slide-6 {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            color: white;
+        }
+
+        .slide-6 h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            font-weight: 300;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .gratitude-list {
+            max-width: 650px;
+        }
+
+        .gratitude-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 25px 0;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .gratitude-item:nth-child(1) { animation-delay: 0.2s; }
+        .gratitude-item:nth-child(2) { animation-delay: 0.4s; }
+        .gratitude-item:nth-child(3) { animation-delay: 0.6s; }
+
+        .gratitude-number {
+            font-size: 2em;
+            font-weight: 300;
+            margin-right: 20px;
+            opacity: 0.8;
+        }
+
+        .gratitude-content {
+            flex: 1;
+        }
+
+        .gratitude-content h4 {
+            font-size: 1.15em;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .gratitude-content p {
+            font-size: 0.95em;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Slide 7: Good Night */
+        .slide-7 {
+            background: linear-gradient(to bottom, #2c3e50 0%, #34495e 100%);
+            color: #ecf0f1;
+        }
+
+        .slide-7 .night-icon {
+            font-size: 5em;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .slide-7 h2 {
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .slide-7 .quote {
+            font-size: 1.3em;
+            font-style: italic;
+            opacity: 0.8;
+            margin-top: 30px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .slide-7 .tomorrow {
+            margin-top: 50px;
+            padding: 25px 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            font-size: 1.1em;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: #5d4e37;
+        }
+
+        .nav-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-indicator {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            color: inherit;
+        }
+
+        .progress-dots {
+            position: fixed;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .progress-dot.active {
+            background: rgba(0, 0, 0, 0.6);
+            transform: scale(1.3);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 25px;
+            }
+
+            .slide-1 h1 {
+                font-size: 2em;
+            }
+
+            .slide h2 {
+                font-size: 1.8em;
+            }
+
+            .moments-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mood-options {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .mood-item {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            .progress-dots {
+                left: 15px;
+            }
+
+            .progress-dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            .nav-bar {
+                bottom: 20px;
+                padding: 12px 20px;
+            }
+
+            .nav-btn {
+                padding: 10px 18px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Gentle floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: drift linear infinite;
+        }
+
+        @keyframes drift {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="presentation">
+        <!-- Slide 1: Cover -->
+        <div class="slide slide-1 active">
+            <div class="date-display" id="currentDate"></div>
+            <h1>今日时光</h1>
+            <p class="subtitle">记录生活中的每一个温暖瞬间</p>
+            <div class="morning-icon">☕</div>
+        </div>
+
+        <!-- Slide 2: Morning Mood -->
+        <div class="slide slide-2">
+            <h2>晨间心情</h2>
+            <div class="mood-container">
+                <p class="mood-question">今天醒来，感觉如何？</p>
+                <div class="mood-options">
+                    <div class="mood-item">
+                        <div class="mood-emoji">😊</div>
+                        <div class="mood-text">愉悦</div>
+                    </div>
+                    <div class="mood-item">
+                        <div class="mood-emoji">😌</div>
+                        <div class="mood-text">平静</div>
+                    </div>
+                    <div class="mood-item">
+                        <div class="mood-emoji">🤔</div>
+                        <div class="mood-text">思考</div>
+                    </div>
+                    <div class="mood-item">
+                        <div class="mood-emoji">💪</div>
+                        <div class="mood-text">充满活力</div>
+                    </div>
+                </div>
+                
+                <div class="gratitude-section">
+                    <h3>🌸 今日感恩</h3>
+                    <p class="gratitude-text">
+                        "感谢清晨的阳光，感谢一杯温暖的咖啡，<br>
+                        感谢生命中所有美好的遇见..."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Today's Plan -->
+        <div class="slide slide-3">
+            <h2>今日计划</h2>
+            <div class="todo-container">
+                <div class="todo-item">
+                    <div class="todo-checkbox"></div>
+                    <div class="todo-text">晨跑 30 分钟</div>
+                    <div class="todo-time">07:00</div>
+                </div>
+                <div class="todo-item">
+                    <div class="todo-checkbox"></div>
+                    <div class="todo-text">阅读《活着》第5章</div>
+                    <div class="todo-time">09:00</div>
+                </div>
+                <div class="todo-item">
+                    <div class="todo-checkbox"></div>
+                    <div class="todo-text">完成项目方案</div>
+                    <div class="todo-time">14:00</div>
+                </div>
+                <div class="todo-item">
+                    <div class="todo-checkbox"></div>
+                    <div class="todo-text">给家人打电话</div>
+                    <div class="todo-time">19:00</div>
+                </div>
+                <div class="todo-item">
+                    <div class="todo-checkbox"></div>
+                    <div class="todo-text">冥想 15 分钟</div>
+                    <div class="todo-time">21:00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Moments -->
+        <div class="slide slide-4">
+            <h2>今日片段</h2>
+            <div class="moments-grid">
+                <div class="moment-card">
+                    <div class="moment-icon">🌅</div>
+                    <div class="moment-title">清晨时光</div>
+                    <div class="moment-desc">在阳台上看日出，感受新一天的开始</div>
+                </div>
+                <div class="moment-card">
+                    <div class="moment-icon">📖</div>
+                    <div class="moment-title">阅读时刻</div>
+                    <div class="moment-desc">沉浸在书的世界里，与作者对话</div>
+                </div>
+                <div class="moment-card">
+                    <div class="moment-icon">🍵</div>
+                    <div class="moment-title">午后茶歇</div>
+                    <div class="moment-desc">泡一杯花茶，享受片刻宁静</div>
+                </div>
+                <div class="moment-card">
+                    <div class="moment-icon">🌙</div>
+                    <div class="moment-title">夜晚散步</div>
+                    <div class="moment-desc">在月光下漫步，整理一天的思绪</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Reflection -->
+        <div class="slide slide-5">
+            <h2>今日反思</h2>
+            <div class="reflection-container">
+                <div class="reflection-item">
+                    <h3>✨ 今天的收获</h3>
+                    <p>学会了新的工作方法，效率提升了；和朋友深聊，获得了新的启发。</p>
+                </div>
+                <div class="reflection-item">
+                    <h3>🌱 需要改进的地方</h3>
+                    <p>工作时间有些拖延，明天要更好地分配时间；运动计划没有完成。</p>
+                </div>
+                <div class="reflection-item">
+                    <h3>💭 今日的感悟</h3>
+                    <p>生活的美好在于细节，学会放慢脚步，用心感受每一个当下。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Evening Gratitude -->
+        <div class="slide slide-6">
+            <h2>夜间感恩</h2>
+            <div class="gratitude-list">
+                <div class="gratitude-item">
+                    <div class="gratitude-number">1</div>
+                    <div class="gratitude-content">
+                        <h4>感谢的人</h4>
+                        <p>感谢同事的帮助，让工作进展顺利；感谢朋友的关心。</p>
+                    </div>
+                </div>
+                <div class="gratitude-item">
+                    <div class="gratitude-number">2</div>
+                    <div class="gratitude-content">
+                        <h4>感谢的事</h4>
+                        <p>感谢今天的好天气，让心情格外舒畅；感谢一顿美味的晚餐。</p>
+                    </div>
+                </div>
+                <div class="gratitude-item">
+                    <div class="gratitude-number">3</div>
+                    <div class="gratitude-content">
+                        <h4>感谢自己</h4>
+                        <p>感谢自己的坚持和努力，即使在困难时也没有放弃。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Good Night -->
+        <div class="slide slide-7">
+            <div class="night-icon">🌙</div>
+            <h2>晚安</h2>
+            <p class="quote">"每一天都是一个新的开始，每一次呼吸都是一份礼物"</p>
+            <div class="tomorrow">
+                🌟 期待明天的美好
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="progress-dots" id="progressDots"></div>
+
+    <div class="nav-bar">
+        <button class="nav-btn" onclick="changeSlide(-1)">← 上一页</button>
+        <button class="nav-btn" onclick="changeSlide(1)">下一页 →</button>
+    </div>
+
+    <div class="page-indicator">
+        <span id="currentPage">1</span> / <span id="totalPages">7</span>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        // Set current date
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('zh-CN', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            weekday: 'long'
+        });
+        document.getElementById('currentDate').textContent = dateStr;
+
+        // Create progress dots
+        const dotsContainer = document.getElementById('progressDots');
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'progress-dot';
+            dot.onclick = () => goToSlide(i);
+            dotsContainer.appendChild(dot);
+        }
+
+        const dots = document.querySelectorAll('.progress-dot');
+
+        // Initialize
+        document.getElementById('totalPages').textContent = totalSlides;
+        updateNavigation();
+        createParticles();
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                goToSlide(newSlide);
+            }
+        }
+
+        function goToSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            updateNavigation();
+        }
+
+        function updateNavigation() {
+            document.getElementById('currentPage').textContent = currentSlide + 1;
+            
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSlide(-1);
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+        });
+
+        // Touch swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const deltaX = touchStartX - touchEndX;
+            const deltaY = touchStartY - touchEndY;
+            
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (Math.abs(deltaX) > 50) {
+                    if (deltaX > 0) changeSlide(1);
+                    else changeSlide(-1);
+                }
+            } else {
+                if (Math.abs(deltaY) > 50) {
+                    if (deltaY > 0) changeSlide(1);
+                    else changeSlide(-1);
+                }
+            }
+        }
+
+        // Mouse wheel
+        let wheelTimeout;
+        document.addEventListener('wheel', (e) => {
+            clearTimeout(wheelTimeout);
+            wheelTimeout = setTimeout(() => {
+                if (e.deltaY > 0) changeSlide(1);
+                else changeSlide(-1);
+            }, 50);
+        });
+
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 15;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 10 + 5;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 20 + 15) + 's';
+                particle.style.animationDelay = (Math.random() * 10) + 's';
+                
+                container.appendChild(particle);
+            }
+        }
+    </script>
+</body>
+</html>

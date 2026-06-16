@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作汇报PPT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif;
+            background: #0f0f23;
+            overflow: hidden;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 40px;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: all;
+        }
+
+        /* Slide 1: Cover */
+        .slide-1 {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+
+        .slide-1 .company-logo {
+            font-size: 4em;
+            margin-bottom: 30px;
+            animation: rotateIn 1s ease-out;
+        }
+
+        .slide-1 h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .slide-1 .report-info {
+            font-size: 1.5em;
+            opacity: 0.9;
+            margin-top: 30px;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .slide-1 .date {
+            font-size: 1.2em;
+            margin-top: 20px;
+            opacity: 0.8;
+            animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+
+        /* Slide 2: Overview */
+        .slide-2 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .slide-2 h2 {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .slide-2 h2::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 900px;
+        }
+
+        .overview-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 35px 25px;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .overview-item:nth-child(1) { animation-delay: 0.2s; }
+        .overview-item:nth-child(2) { animation-delay: 0.4s; }
+        .overview-item:nth-child(3) { animation-delay: 0.6s; }
+
+        .overview-item:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .overview-item .number {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .overview-item .label {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* Slide 3: Content List */
+        .slide-3 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .slide-3 h2 {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+        }
+
+        .content-list {
+            max-width: 700px;
+        }
+
+        .content-item {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            padding: 25px 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            animation: slideInLeft 0.6s ease-out both;
+        }
+
+        .content-item:nth-child(1) { animation-delay: 0.2s; }
+        .content-item:nth-child(2) { animation-delay: 0.4s; }
+        .content-item:nth-child(3) { animation-delay: 0.6s; }
+        .content-item:nth-child(4) { animation-delay: 0.8s; }
+
+        .content-item:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .content-item .item-number {
+            background: white;
+            color: #f5576c;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 25px;
+            flex-shrink: 0;
+        }
+
+        .content-item .item-text {
+            font-size: 1.3em;
+        }
+
+        /* Slide 4: Chart/Data */
+        .slide-4 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .slide-4 h2 {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+        }
+
+        .chart-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 900px;
+        }
+
+        .chart-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 35px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            animation: zoomIn 0.6s ease-out both;
+        }
+
+        .chart-box:nth-child(1) { animation-delay: 0.2s; }
+        .chart-box:nth-child(2) { animation-delay: 0.4s; }
+
+        .chart-box h3 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 150px;
+            gap: 15px;
+        }
+
+        .bar {
+            flex: 1;
+            background: white;
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            animation: growUp 1s ease-out both;
+            min-height: 20px;
+        }
+
+        .bar:nth-child(1) { height: 60%; animation-delay: 0.3s; }
+        .bar:nth-child(2) { height: 80%; animation-delay: 0.5s; }
+        .bar:nth-child(3) { height: 45%; animation-delay: 0.7s; }
+        .bar:nth-child(4) { height: 90%; animation-delay: 0.9s; }
+
+        .bar-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+        /* Slide 5: Timeline */
+        .slide-5 {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        .slide-5 h2 {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+        }
+
+        .timeline {
+            max-width: 800px;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 50%;
+            margin: 30px 0;
+            position: relative;
+            animation: slideInLeft 0.6s ease-out both;
+        }
+
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: 50%;
+            animation: slideInRight 0.6s ease-out both;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.4s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.6s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.8s; }
+
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 20px 25px;
+            border-radius: 12px;
+            max-width: 350px;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -60px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -60px;
+        }
+
+        .timeline-content h3 {
+            font-size: 1.2em;
+            margin-bottom: 8px;
+        }
+
+        .timeline-content p {
+            font-size: 0.95em;
+            opacity: 0.95;
+        }
+
+        /* Slide 6: Summary */
+        .slide-6 {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+            color: white;
+        }
+
+        .slide-6 h2 {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            max-width: 800px;
+        }
+
+        .summary-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .summary-card:nth-child(1) { animation-delay: 0.2s; }
+        .summary-card:nth-child(2) { animation-delay: 0.4s; }
+        .summary-card:nth-child(3) { animation-delay: 0.6s; }
+        .summary-card:nth-child(4) { animation-delay: 0.8s; }
+
+        .summary-card .card-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .summary-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 12px;
+        }
+
+        .summary-card p {
+            font-size: 1em;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Slide 7: Thank You */
+        .slide-7 {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+        }
+
+        .slide-7 h2 {
+            font-size: 3em;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .slide-7 p {
+            font-size: 1.5em;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .slide-7 .thanks-icon {
+            font-size: 5em;
+            margin-bottom: 30px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        /* Navigation */
+        .nav-dots {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.3);
+        }
+
+        .nav-buttons {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #333;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .page-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes rotateIn {
+            from {
+                opacity: 0;
+                transform: rotate(-180deg) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: rotate(0) scale(1);
+            }
+        }
+
+        @keyframes growUp {
+            from {
+                transform: scaleY(0);
+            }
+            to {
+                transform: scaleY(1);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 25px;
+            }
+
+            .slide-1 h1 {
+                font-size: 2em;
+            }
+
+            .slide h2 {
+                font-size: 1.8em;
+            }
+
+            .overview-grid,
+            .chart-container,
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                padding-left: 60px;
+                padding-right: 0;
+                justify-content: flex-start;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-dot,
+            .timeline-item:nth-child(even) .timeline-dot {
+                left: 10px;
+                right: auto;
+            }
+
+            .nav-dots {
+                right: 15px;
+            }
+
+            .dot {
+                width: 10px;
+                height: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Cover -->
+        <div class="slide slide-1 active">
+            <div class="company-logo">📊</div>
+            <h1>2024年度工作汇报</h1>
+            <p class="report-info">汇报人：张三 | 部门：市场部</p>
+            <p class="date">2024年12月</p>
+        </div>
+
+        <!-- Slide 2: Overview -->
+        <div class="slide slide-2">
+            <h2>工作概览</h2>
+            <div class="overview-grid">
+                <div class="overview-item">
+                    <div class="number">156</div>
+                    <div class="label">完成项目数</div>
+                </div>
+                <div class="overview-item">
+                    <div class="number">98%</div>
+                    <div class="label">客户满意度</div>
+                </div>
+                <div class="overview-item">
+                    <div class="number">2.5M</div>
+                    <div class="label">营收增长</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Content -->
+        <div class="slide slide-3">
+            <h2>汇报目录</h2>
+            <div class="content-list">
+                <div class="content-item">
+                    <div class="item-number">01</div>
+                    <div class="item-text">年度工作回顾</div>
+                </div>
+                <div class="content-item">
+                    <div class="item-number">02</div>
+                    <div class="item-text">重点项目成果</div>
+                </div>
+                <div class="content-item">
+                    <div class="item-number">03</div>
+                    <div class="item-text">问题与挑战</div>
+                </div>
+                <div class="content-item">
+                    <div class="item-number">04</div>
+                    <div class="item-text">明年工作计划</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Data -->
+        <div class="slide slide-4">
+            <h2>数据分析</h2>
+            <div class="chart-container">
+                <div class="chart-box">
+                    <h3>季度业绩趋势</h3>
+                    <div class="bar-chart">
+                        <div class="bar">
+                            <div class="bar-label">Q1</div>
+                        </div>
+                        <div class="bar">
+                            <div class="bar-label">Q2</div>
+                        </div>
+                        <div class="bar">
+                            <div class="bar-label">Q3</div>
+                        </div>
+                        <div class="bar">
+                            <div class="bar-label">Q4</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-box">
+                    <h3>关键指标</h3>
+                    <div style="padding: 20px 0;">
+                        <p style="font-size: 1.2em; margin: 15px 0;">📈 增长率: <strong>35%</strong></p>
+                        <p style="font-size: 1.2em; margin: 15px 0;">🎯 完成率: <strong>92%</strong></p>
+                        <p style="font-size: 1.2em; margin: 15px 0;">⭐ 优秀率: <strong>88%</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Timeline -->
+        <div class="slide slide-5">
+            <h2>重要时间节点</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-dot"></div>
+                        <h3>第一季度</h3>
+                        <p>启动新项目，完成团队组建</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-dot"></div>
+                        <h3>第二季度</h3>
+                        <p>产品上线，获得市场认可</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-dot"></div>
+                        <h3>第三季度</h3>
+                        <p>业务扩展，开拓新市场</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-dot"></div>
+                        <h3>第四季度</h3>
+                        <p>总结优化，规划明年方向</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Summary -->
+        <div class="slide slide-6">
+            <h2>工作总结</h2>
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="card-icon">✅</div>
+                    <h3>主要成就</h3>
+                    <p>超额完成年度目标，客户满意度创新高</p>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon">💡</div>
+                    <h3>经验收获</h3>
+                    <p>团队协作能力提升，流程优化成效显著</p>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon">⚠️</div>
+                    <h3>存在不足</h3>
+                    <p>资源配置需优化，响应速度待提升</p>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon">🎯</div>
+                    <h3>改进方向</h3>
+                    <p>加强培训投入，完善激励机制</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Thank You -->
+        <div class="slide slide-7">
+            <div class="thanks-icon">🙏</div>
+            <h2>感谢聆听</h2>
+            <p>敬请批评指正</p>
+        </div>
+    </div>
+
+    <!-- Navigation Dots -->
+    <div class="nav-dots" id="navDots"></div>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+        <button class="nav-btn" onclick="changeSlide(-1)">← 上一页</button>
+        <button class="nav-btn" onclick="changeSlide(1)">下一页 →</button>
+    </div>
+
+    <!-- Page Counter -->
+    <div class="page-counter">
+        <span id="currentPage">1</span> / <span id="totalPages">7</span>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        // Create navigation dots
+        const navDotsContainer = document.getElementById('navDots');
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.onclick = () => goToSlide(i);
+            navDotsContainer.appendChild(dot);
+        }
+
+        const dots = document.querySelectorAll('.dot');
+
+        // Initialize
+        document.getElementById('totalPages').textContent = totalSlides;
+        updateNavigation();
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                goToSlide(newSlide);
+            }
+        }
+
+        function goToSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            updateNavigation();
+        }
+
+        function updateNavigation() {
+            document.getElementById('currentPage').textContent = currentSlide + 1;
+            
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSlide(-1);
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+        });
+
+        // Touch swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const deltaX = touchStartX - touchEndX;
+            const deltaY = touchStartY - touchEndY;
+            
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (Math.abs(deltaX) > 50) {
+                    if (deltaX > 0) changeSlide(1);
+                    else changeSlide(-1);
+                }
+            } else {
+                if (Math.abs(deltaY) > 50) {
+                    if (deltaY > 0) changeSlide(1);
+                    else changeSlide(-1);
+                }
+            }
+        }
+
+        // Mouse wheel
+        let wheelTimeout;
+        document.addEventListener('wheel', (e) => {
+            clearTimeout(wheelTimeout);
+            wheelTimeout = setTimeout(() => {
+                if (e.deltaY > 0) changeSlide(1);
+                else changeSlide(-1);
+            }, 50);
+        });
+    </script>
+</body>
+</html>

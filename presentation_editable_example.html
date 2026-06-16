@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的日常日记 - 可编辑版本</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+            background: #faf9f7;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        /* Slide 1: Cover */
+        .slide-1 {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #5d4e37;
+        }
+
+        .slide-1 h1 {
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            font-weight: 300;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .slide-1 .subtitle {
+            font-size: 1.2em;
+            opacity: 0.7;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        /* Slide 2: Todo List */
+        .slide-2 {
+            background: linear-gradient(to bottom, #e8f5e9 0%, #c8e6c9 100%);
+            color: #4a5d4a;
+        }
+
+        .slide-2 h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .todo-container {
+            max-width: 650px;
+            width: 100%;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .todo-item:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .todo-checkbox {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4a5d4a;
+            border-radius: 50%;
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .todo-text {
+            font-size: 1.15em;
+            flex: 1;
+        }
+
+        /* Slide 3: Notes */
+        .slide-3 {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            color: #5d4e37;
+        }
+
+        .slide-3 h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .notes-container {
+            max-width: 700px;
+        }
+
+        .note-card {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            transition: all 0.3s;
+        }
+
+        .note-card:hover {
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .note-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .note-card p {
+            font-size: 1.05em;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.3s;
+            color: #5d4e37;
+        }
+
+        .nav-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 25px;
+            }
+            .slide-1 h1 {
+                font-size: 2em;
+            }
+            .slide h2 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        
+        <!-- ============================================ -->
+        <!-- 第1页: 封面 - 修改这里的标题和副标题 -->
+        <!-- ============================================ -->
+        <div class="slide slide-1 active">
+            <!-- 👇 修改日期 -->
+            <div style="font-size: 1.3em; margin-bottom: 30px; opacity: 0.8;">
+                2024年12月15日 星期日
+            </div>
+            
+            <!-- 👇 修改主标题 -->
+            <h1>我的日常记录</h1>
+            
+            <!-- 👇 修改副标题 -->
+            <p class="subtitle">用心感受生活的每一天</p>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- 第2页: 今日计划 - 修改待办事项 -->
+        <!-- ============================================ -->
+        <div class="slide slide-2">
+            <!-- 👇 修改页面标题 -->
+            <h2>今日计划</h2>
+            
+            <div class="todo-container">
+                <!-- 👇 修改每个待办事项 -->
+                <div class="todo-item">
+                    <div class="todo-checkbox"></div>
+                    <!-- 修改事项内容 -->
+                    <div class="todo-text">晨跑 30 分钟</div>
+                </div>
+                
+                <div class="todo-item">
+                    <div class="todo-checkbox"></div>
+                    <div class="todo-text">阅读《活着》第5章</div>
+                </div>
+                
+                <div class="todo-item">
+                    <div class="todo-checkbox"></div>
+                    <div class="todo-text">完成项目方案初稿</div>
+                </div>
+                
+                <div class="todo-item">
+                    <div class="todo-checkbox"></div>
+                    <div class="todo-text">下午3点开会</div>
+                </div>
+                
+                <div class="todo-item">
+                    <div class="todo-checkbox"></div>
+                    <div class="todo-text">给妈妈打电话</div>
+                </div>
+                
+                <!-- 👇 如需添加更多事项,复制上面的 div class="todo-item" 块 -->
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- 第3页: 今日笔记 - 修改笔记内容 -->
+        <!-- ============================================ -->
+        <div class="slide slide-3">
+            <!-- 👇 修改页面标题 -->
+            <h2>今日随笔</h2>
+            
+            <div class="notes-container">
+                <!-- 👇 第一个笔记卡片 -->
+                <div class="note-card">
+                    <!-- 修改小标题 -->
+                    <h3>🌅 早晨感悟</h3>
+                    <!-- 修改内容 -->
+                    <p>
+                        今天的阳光特别好,坐在阳台上喝咖啡,感觉生活真美好。
+                        新的一天,新的开始,要加油!
+                    </p>
+                </div>
+                
+                <!-- 👇 第二个笔记卡片 -->
+                <div class="note-card">
+                    <h3>💼 工作心得</h3>
+                    <p>
+                        今天的工作效率很高,完成了重要的方案。
+                        团队合作很愉快,大家都有很多好的想法。
+                    </p>
+                </div>
+                
+                <!-- 👇 第三个笔记卡片 -->
+                <div class="note-card">
+                    <h3>🌙 晚间思考</h3>
+                    <p>
+                        睡前回顾一天,发现了很多值得感恩的事情。
+                        生活就是这样,平凡中透着温暖。
+                    </p>
+                </div>
+                
+                <!-- 👇 如需添加更多卡片,复制上面的 div class="note-card" 块 -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 导航按钮 -->
+    <div class="nav-bar">
+        <button class="nav-btn" onclick="changeSlide(-1)">← 上一页</button>
+        <button class="nav-btn" onclick="changeSlide(1)">下一页 →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = newSlide;
+                slides[currentSlide].classList.add('active');
+            }
+        }
+
+        // 键盘控制
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // 触摸滑动支持
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) changeSlide(1);
+            if (touchEndX - touchStartX > 50) changeSlide(-1);
+        });
+    </script>
+</body>
+</html>

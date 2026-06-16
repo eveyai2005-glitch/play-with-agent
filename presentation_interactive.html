@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的日常日记 - 可填写版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            overflow-x: hidden;
+            background: #faf9f7;
+        }
+
+        /* 编辑模式切换按钮 */
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .mode-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #5d4e37;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            color: #5d4e37;
+            font-weight: 600;
+        }
+
+        .mode-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .mode-btn.active {
+            background: #5d4e37;
+            color: white;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        /* Slide 1: Cover */
+        .slide-1 {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #5d4e37;
+        }
+
+        .editable-field {
+            border: 2px dashed transparent;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            background: transparent;
+        }
+
+        .edit-mode .editable-field {
+            border-color: #5d4e37;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: text;
+        }
+
+        .edit-mode .editable-field:focus {
+            outline: none;
+            border-color: #764ba2;
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .slide-1 h1 {
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            font-weight: 300;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .slide-1 .subtitle {
+            font-size: 1.2em;
+            opacity: 0.7;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        /* Slide 2: Mood & Date */
+        .slide-2 {
+            background: linear-gradient(to bottom, #fff5e6 0%, #ffe4cc 100%);
+            color: #6b5b4f;
+        }
+
+        .slide-2 h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .mood-selector {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .mood-option {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            min-width: 100px;
+            border: 3px solid transparent;
+        }
+
+        .mood-option:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .mood-option.selected {
+            border-color: #f5576c;
+            background: rgba(255, 255, 255, 0.95);
+            transform: scale(1.1);
+        }
+
+        .mood-emoji {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .gratitude-input {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 30px;
+        }
+
+        .gratitude-input textarea {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid rgba(107, 91, 79, 0.3);
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            background: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s;
+        }
+
+        .gratitude-input textarea:focus {
+            outline: none;
+            border-color: #f5576c;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Slide 3: Todo List */
+        .slide-3 {
+            background: linear-gradient(to bottom, #e8f5e9 0%, #c8e6c9 100%);
+            color: #4a5d4a;
+        }
+
+        .slide-3 h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .todo-container {
+            max-width: 650px;
+            width: 100%;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .todo-checkbox {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4a5d4a;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .todo-checkbox.checked {
+            background: #4a5d4a;
+            color: white;
+        }
+
+        .todo-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 1.1em;
+            font-family: inherit;
+            color: #4a5d4a;
+        }
+
+        .todo-input:focus {
+            outline: none;
+        }
+
+        .add-todo-btn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: rgba(74, 93, 74, 0.2);
+            border: 2px dashed #4a5d4a;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1em;
+            color: #4a5d4a;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .add-todo-btn:hover {
+            background: rgba(74, 93, 74, 0.3);
+        }
+
+        /* Slide 4: Notes */
+        .slide-4 {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            color: #5d4e37;
+        }
+
+        .slide-4 h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .notes-container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .note-card {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            transition: all 0.3s;
+        }
+
+        .note-card h3 {
+            font-size: 1.2em;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .note-card textarea {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 1em;
+            line-height: 1.8;
+            font-family: inherit;
+            color: #5d4e37;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .note-card textarea:focus {
+            outline: none;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.3s;
+            color: #5d4e37;
+        }
+
+        .nav-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .page-indicator {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.4);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            color: #5d4e37;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 0.95em;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 3000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 25px;
+            }
+            .slide-1 h1 {
+                font-size: 2em;
+            }
+            .slide h2 {
+                font-size: 1.8em;
+            }
+            .mode-toggle {
+                top: 10px;
+                right: 10px;
+            }
+            .mode-btn {
+                padding: 8px 15px;
+                font-size: 0.8em;
+            }
+            .action-buttons {
+                right: 15px;
+                bottom: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 模式切换 -->
+    <div class="mode-toggle">
+        <button class="mode-btn active" id="viewModeBtn" onclick="setMode('view')">👁️ 浏览模式</button>
+        <button class="mode-btn" id="editModeBtn" onclick="setMode('edit')">✏️ 编辑模式</button>
+    </div>
+
+    <div class="presentation" id="presentation">
+        
+        <!-- 第1页: 封面 -->
+        <div class="slide slide-1 active">
+            <div class="editable-field" contenteditable="false" data-field="date" style="font-size: 1.3em; margin-bottom: 30px; opacity: 0.8;">
+                2024年12月15日 星期日
+            </div>
+            
+            <h1 class="editable-field" contenteditable="false" data-field="title">
+                我的日常记录
+            </h1>
+            
+            <p class="subtitle editable-field" contenteditable="false" data-field="subtitle">
+                用心感受生活的每一天
+            </p>
+        </div>
+
+        <!-- 第2页: 心情与感恩 -->
+        <div class="slide slide-2">
+            <h2>今日心情</h2>
+            
+            <div class="mood-selector">
+                <div class="mood-option" data-mood="happy" onclick="selectMood(this)">
+                    <div class="mood-emoji">😊</div>
+                    <div>开心</div>
+                </div>
+                <div class="mood-option" data-mood="calm" onclick="selectMood(this)">
+                    <div class="mood-emoji">😌</div>
+                    <div>平静</div>
+                </div>
+                <div class="mood-option" data-mood="thinking" onclick="selectMood(this)">
+                    <div class="mood-emoji">🤔</div>
+                    <div>思考</div>
+                </div>
+                <div class="mood-option" data-mood="energetic" onclick="selectMood(this)">
+                    <div class="mood-emoji">💪</div>
+                    <div>充满活力</div>
+                </div>
+            </div>
+
+            <div class="gratitude-input">
+                <label style="display: block; margin-bottom: 10px; font-size: 1.1em;">今日感恩：</label>
+                <textarea class="editable-field" data-field="gratitude" placeholder="写下你今天感恩的事情...">感谢清晨的阳光，感谢一杯温暖的咖啡，感谢生命中所有美好的遇见...</textarea>
+            </div>
+        </div>
+
+        <!-- 第3页: 今日计划 -->
+        <div class="slide slide-3">
+            <h2>今日计划</h2>
+            
+            <div class="todo-container" id="todoContainer">
+                <div class="todo-item">
+                    <div class="todo-checkbox" onclick="toggleTodo(this)"></div>
+                    <input type="text" class="todo-input editable-field" value="晨跑 30 分钟" data-todo="1">
+                </div>
+                <div class="todo-item">
+                    <div class="todo-checkbox" onclick="toggleTodo(this)"></div>
+                    <input type="text" class="todo-input editable-field" value="阅读《活着》第5章" data-todo="2">
+                </div>
+                <div class="todo-item">
+                    <div class="todo-checkbox" onclick="toggleTodo(this)"></div>
+                    <input type="text" class="todo-input editable-field" value="完成项目方案" data-todo="3">
+                </div>
+            </div>
+            
+            <button class="add-todo-btn" onclick="addTodo()" style="display: none;" id="addTodoBtn">
+                + 添加新事项
+            </button>
+        </div>
+
+        <!-- 第4页: 今日随笔 -->
+        <div class="slide slide-4">
+            <h2>今日随笔</h2>
+            
+            <div class="notes-container">
+                <div class="note-card">
+                    <h3 class="editable-field" contenteditable="false" data-field="note1-title">🌅 早晨感悟</h3>
+                    <textarea class="editable-field" data-field="note1-content">今天的阳光特别好，坐在阳台上喝咖啡，感觉生活真美好。新的一天，新的开始，要加油！</textarea>
+                </div>
+                
+                <div class="note-card">
+                    <h3 class="editable-field" contenteditable="false" data-field="note2-title">💼 工作心得</h3>
+                    <textarea class="editable-field" data-field="note2-content">今天的工作效率很高，完成了重要的方案。团队合作很愉快，大家都有很多好的想法。</textarea>
+                </div>
+                
+                <div class="note-card">
+                    <h3 class="editable-field" contenteditable="false" data-field="note3-title">🌙 晚间思考</h3>
+                    <textarea class="editable-field" data-field="note3-content">睡前回顾一天，发现了很多值得感恩的事情。生活就是这样，平凡中透着温暖。</textarea>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 导航 -->
+    <div class="nav-bar">
+        <button class="nav-btn" onclick="changeSlide(-1)">← 上一页</button>
+        <button class="nav-btn" onclick="changeSlide(1)">下一页 →</button>
+    </div>
+
+    <div class="page-indicator">
+        <span id="currentPage">1</span> / <span id="totalPages">4</span>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div class="action-buttons">
+        <button class="action-btn" onclick="saveData()">💾 保存</button>
+        <button class="action-btn" onclick="exportData()">📥 导出</button>
+        <button class="action-btn" onclick="loadData()">📂 加载</button>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let currentMode = 'view';
+        let todoCount = 3;
+
+        // Initialize
+        document.getElementById('totalPages').textContent = totalSlides;
+        loadSavedData();
+
+        // Mode switching
+        function setMode(mode) {
+            currentMode = mode;
+            const presentation = document.getElementById('presentation');
+            const viewBtn = document.getElementById('viewModeBtn');
+            const editBtn = document.getElementById('editModeBtn');
+            const addTodoBtn = document.getElementById('addTodoBtn');
+
+            if (mode === 'edit') {
+                presentation.classList.add('edit-mode');
+                viewBtn.classList.remove('active');
+                editBtn.classList.add('active');
+                addTodoBtn.style.display = 'block';
+                
+                // Enable editing
+                document.querySelectorAll('.editable-field').forEach(field => {
+                    if (field.tagName === 'INPUT' || field.tagName === 'TEXTAREA') {
+                        field.disabled = false;
+                    } else {
+                        field.contentEditable = true;
+                    }
+                });
+                
+                showToast('已进入编辑模式，点击文字即可编辑');
+            } else {
+                presentation.classList.remove('edit-mode');
+                viewBtn.classList.add('active');
+                editBtn.classList.remove('active');
+                addTodoBtn.style.display = 'none';
+                
+                // Disable editing
+                document.querySelectorAll('.editable-field').forEach(field => {
+                    if (field.tagName === 'INPUT' || field.tagName === 'TEXTAREA') {
+                        field.disabled = true;
+                    } else {
+                        field.contentEditable = false;
+                    }
+                });
+                
+                saveData();
+                showToast('已保存并切换到浏览模式');
+            }
+        }
+
+        // Slide navigation
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = newSlide;
+                slides[currentSlide].classList.add('active');
+                document.getElementById('currentPage').textContent = currentSlide + 1;
+            }
+        }
+
+        // Mood selection
+        function selectMood(element) {
+            document.querySelectorAll('.mood-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            saveData();
+        }
+
+        // Todo checkbox toggle
+        function toggleTodo(checkbox) {
+            checkbox.classList.toggle('checked');
+            if (checkbox.classList.contains('checked')) {
+                checkbox.innerHTML = '✓';
+            } else {
+                checkbox.innerHTML = '';
+            }
+            saveData();
+        }
+
+        // Add new todo
+        function addTodo() {
+            todoCount++;
+            const container = document.getElementById('todoContainer');
+            const newTodo = document.createElement('div');
+            newTodo.className = 'todo-item';
+            newTodo.innerHTML = `
+                <div class="todo-checkbox" onclick="toggleTodo(this)"></div>
+                <input type="text" class="todo-input editable-field" value="新事项" data-todo="${todoCount}">
+            `;
+            container.appendChild(newTodo);
+            
+            if (currentMode === 'edit') {
+                newTodo.querySelector('input').disabled = false;
+            }
+            
+            showToast('已添加新事项');
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            const data = {
+                date: document.querySelector('[data-field="date"]').innerText,
+                title: document.querySelector('[data-field="title"]').innerText,
+                subtitle: document.querySelector('[data-field="subtitle"]').innerText,
+                mood: document.querySelector('.mood-option.selected')?.dataset.mood || '',
+                gratitude: document.querySelector('[data-field="gratitude"]').value,
+                todos: [],
+                notes: []
+            };
+
+            // Save todos
+            document.querySelectorAll('.todo-item').forEach(item => {
+                const checkbox = item.querySelector('.todo-checkbox');
+                const input = item.querySelector('input');
+                data.todos.push({
+                    text: input.value,
+                    checked: checkbox.classList.contains('checked')
+                });
+            });
+
+            // Save notes
+            for (let i = 1; i <= 3; i++) {
+                data.notes.push({
+                    title: document.querySelector(`[data-field="note${i}-title"]`).innerText,
+                    content: document.querySelector(`[data-field="note${i}-content"]`).value
+                });
+            }
+
+            localStorage.setItem('dailyJournal', JSON.stringify(data));
+            console.log('Data saved:', data);
+        }
+
+        // Load data from localStorage
+        function loadData() {
+            loadSavedData();
+            showToast('数据已加载');
+        }
+
+        function loadSavedData() {
+            const saved = localStorage.getItem('dailyJournal');
+            if (!saved) return;
+
+            const data = JSON.parse(saved);
+
+            // Load basic fields
+            document.querySelector('[data-field="date"]').innerText = data.date || '';
+            document.querySelector('[data-field="title"]').innerText = data.title || '';
+            document.querySelector('[data-field="subtitle"]').innerText = data.subtitle || '';
+            document.querySelector('[data-field="gratitude"]').value = data.gratitude || '';
+
+            // Load mood
+            if (data.mood) {
+                const moodOption = document.querySelector(`[data-mood="${data.mood}"]`);
+                if (moodOption) moodOption.classList.add('selected');
+            }
+
+            // Load todos
+            if (data.todos && data.todos.length > 0) {
+                const container = document.getElementById('todoContainer');
+                container.innerHTML = '';
+                data.todos.forEach((todo, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'todo-item';
+                    div.innerHTML = `
+                        <div class="todo-checkbox ${todo.checked ? 'checked' : ''}" onclick="toggleTodo(this)">
+                            ${todo.checked ? '✓' : ''}
+                        </div>
+                        <input type="text" class="todo-input editable-field" value="${todo.text}" data-todo="${index + 1}" disabled>
+                    `;
+                    container.appendChild(div);
+                });
+                todoCount = data.todos.length;
+            }
+
+            // Load notes
+            if (data.notes && data.notes.length > 0) {
+                data.notes.forEach((note, index) => {
+                    const i = index + 1;
+                    document.querySelector(`[data-field="note${i}-title"]`).innerText = note.title || '';
+                    document.querySelector(`[data-field="note${i}-content"]`).value = note.content || '';
+                });
+            }
+        }
+
+        // Export data as JSON file
+        function exportData() {
+            saveData();
+            const data = localStorage.getItem('dailyJournal');
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `日记_${new Date().toLocaleDateString('zh-CN')}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('数据已导出');
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Touch swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) changeSlide(1);
+            if (touchEndX - touchStartX > 50) changeSlide(-1);
+        });
+
+        // Auto-save before page unload
+        window.addEventListener('beforeunload', () => {
+            saveData();
+        });
+    </script>
+</body>
+</html>

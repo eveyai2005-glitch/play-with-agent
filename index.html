@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML演示文稿合集</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .template-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            cursor: pointer;
+            animation: fadeInUp 0.6s ease-out both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-card:nth-child(1) { animation-delay: 0.1s; }
+        .template-card:nth-child(2) { animation-delay: 0.2s; }
+        .template-card:nth-child(3) { animation-delay: 0.3s; }
+        .template-card:nth-child(4) { animation-delay: 0.4s; }
+        .template-card:nth-child(5) { animation-delay: 0.5s; }
+        .template-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .template-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        .template-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--card-color);
+        }
+
+        .card-icon {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.6em;
+            margin-bottom: 12px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .card-description {
+            font-size: 1em;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .card-features li {
+            padding: 8px 0;
+            color: #555;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-features li::before {
+            content: "✓";
+            color: var(--card-color);
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .card-button {
+            display: inline-block;
+            padding: 14px 30px;
+            background: var(--card-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+            width: 100%;
+        }
+
+        .card-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            padding: 30px;
+            animation: fadeIn 1s ease-out 0.8s both;
+        }
+
+        .footer p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .header p {
+                font-size: 1em;
+            }
+
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .template-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 HTML演示文稿合集</h1>
+            <p>精美、响应式、可交互的在线演示文稿模板</p>
+        </div>
+
+        <div class="templates-grid">
+            <!-- Template 1 -->
+            <div class="template-card" style="--card-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-icon">📱</div>
+                <h3 class="card-title">微信群通知管理方案</h3>
+                <p class="card-description">解决大群通知确认问题的完整解决方案演示</p>
+                <ul class="card-features">
+                    <li>痛点分析与解决方案对比</li>
+                    <li>推荐方案详细说明</li>
+                    <li>使用步骤清晰展示</li>
+                    <li>支持滑动和键盘切换</li>
+                </ul>
+                <a href="presentation.html" class="card-button" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    查看演示 →
+                </a>
+            </div>
+
+            <!-- Template 2 -->
+            <div class="template-card" style="--card-color: #2a5298;">
+                <div class="card-icon">💼</div>
+                <h3 class="card-title">商务工作汇报</h3>
+                <p class="card-description">专业的商务风格,适合工作汇报和总结</p>
+                <ul class="card-features">
+                    <li>数据图表展示</li>
+                    <li>时间线设计</li>
+                    <li>圆点导航快速跳转</li>
+                    <li>专业配色方案</li>
+                </ul>
+                <a href="presentation_business.html" class="card-button" style="background: #2a5298;">
+                    查看演示 →
+                </a>
+            </div>
+
+            <!-- Template 3 -->
+            <div class="template-card" style="--card-color: #fcb69f;">
+                <div class="card-icon">🌸</div>
+                <h3 class="card-title">日常日记模板</h3>
+                <p class="card-description">温暖安静风格,记录生活的美好瞬间</p>
+                <ul class="card-features">
+                    <li>柔和温暖的配色</li>
+                    <li>漂浮粒子动画</li>
+                    <li>晨间心情与感恩</li>
+                    <li>夜间反思与总结</li>
+                </ul>
+                <a href="presentation_daily.html" class="card-button" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+                    查看演示 →
+                </a>
+            </div>
+
+            <!-- Template 4 -->
+            <div class="template-card" style="--card-color: #5d4e37;">
+                <div class="card-icon">✏️</div>
+                <h3 class="card-title">可编辑示例模板</h3>
+                <p class="card-description">带详细注释,学习如何修改HTML内容</p>
+                <ul class="card-features">
+                    <li>详细的修改注释</li>
+                    <li>简化的代码结构</li>
+                    <li>适合新手学习</li>
+                    <li>快速上手修改</li>
+                </ul>
+                <a href="presentation_editable_example.html" class="card-button" style="background: #5d4e37;">
+                    查看演示 →
+                </a>
+            </div>
+
+            <!-- Template 5 - Featured -->
+            <div class="template-card" style="--card-color: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); grid-column: span 2;">
+                <div class="card-icon">🎯</div>
+                <h3 class="card-title">交互式日记本 ⭐ 推荐</h3>
+                <p class="card-description">功能完整的在线填写版本,支持数据保存和导出</p>
+                <ul class="card-features">
+                    <li>双模式切换(浏览/编辑)</li>
+                    <li>本地数据自动保存</li>
+                    <li>心情选择器和待办清单</li>
+                    <li>数据导出为JSON文件</li>
+                    <li>完美适配移动端</li>
+                </ul>
+                <a href="presentation_interactive.html" class="card-button" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    立即体验 →
+                </a>
+            </div>
+
+            <!-- Template 6 -->
+            <div class="template-card" style="--card-color: #4facfe;">
+                <div class="card-icon">📋</div>
+                <h3 class="card-title">通知确认表单</h3>
+                <p class="card-description">在线收集通知确认信息的表单模板</p>
+                <ul class="card-features">
+                    <li>美观的表单设计</li>
+                    <li>响应式布局</li>
+                    <li>数据统计功能</li>
+                    <li>可直接使用</li>
+                </ul>
+                <a href="notification_confirmation.html" class="card-button" style="background: #4facfe;">
+                    查看演示 →
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>💡 所有模板都支持手机端查看 | 完全免费 | 可自由修改</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                <a href="https://github.com/yourusername/PyCharmMiscProject" style="color: white; text-decoration: underline;">
+                    在GitHub上查看源码
+                </a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
